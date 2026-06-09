@@ -6,20 +6,35 @@ from urllib.parse import urljoin
 from playwright.sync_api import sync_playwright
 
 
-all_therapist_url_list = []
+all_therapist_info_list = []
 
-def extract_therapist_url(html_page):
+def extract_therapist_info(html_page):
     soup = BeautifulSoup(html_page, "html.parser")
     therapist_list  =soup.select_one('div[data-testid="best-match-cards"]')
     base_url = "https://care.headway.co"
 
-    therapist_url_list = []
+    therapist_info_list = []
     for i in therapist_list:
         href = i.select_one("a.block.h-full.w-full").get("href")
         full_url = urljoin(base_url, href)
-        therapist_url_list.append(full_url)
-    return therapist_url_list
+        therapist_info_list.append({
+            "therapist_name" : i.select_one("h4").get_text(),
 
+            "sub_title" : i.select_one(".hlx-typography-content-body").get_text(separator=", "),
+
+            "Bio"  : i.find(class_="[&_*]:!font-normal [&_*]:not-italic [&_*]:no-underline line-clamp-3").get_text(separator=", "),
+
+            "therapist_url" : urljoin(base_url, href),
+
+            "Specialty" : [j.get_text() for j  in i.select(".hlx-badge-content")][:-3],
+
+            "style" : [j.get_text() for j  in i.select(".hlx-badge-content")][-3:],
+
+            
+        })
+    return therapist_info_list
+
+ 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
     context = browser.new_context()
@@ -32,9 +47,6 @@ with sync_playwright() as p:
         scrool_amount = random.randint(800, 1000)
         page.mouse.wheel(0, scrool_amount)
         time.sleep(random.uniform(0.5, 2))
-
-    therapist_list = page.locator('div[data-testid="best-match-cards"] > div')
-    print(therapist_list.count())
     
 
     # while True:
@@ -51,14 +63,14 @@ with sync_playwright() as p:
             time.sleep(random.uniform(0.5, 2))
         html_page = page.content()
         
-        print(extract_therapist_url(html_page))
-        all_therapist_url_list.extend(extract_therapist_url(html_page))
+        print("therapist : ", len(extract_therapist_info(html_page)))
+        all_therapist_info_list.extend(extract_therapist_info(html_page))
 
     page.wait_for_timeout(3000)
   
     page.wait_for_timeout(2500)
     page.close()
 
-df = pd.Series(all_therapist_url_list).reset_index()
+df = pd.DataFrame(all_therapist_info_list)
 
-df.to_excel("therapist_url_list.xlsx", sheet_name="therapist_profile", index=False)
+df.to_excel("all_therapist_info_list_sample_table.xlsx", sheet_name="therapist_info", index=False)
