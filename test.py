@@ -50,7 +50,7 @@ with sync_playwright() as p:
     
 
     # while True:
-    for i in range(1, 3):
+    for i in range(5):
         next_page = page.locator("nav.hlx-pagination ul > li:last-child")
         if not next_page.is_visible():
             break
@@ -64,6 +64,10 @@ with sync_playwright() as p:
         html_page = page.content()
         
         print("therapist : ", len(extract_therapist_info(html_page)))
+
+        # Output Checking
+        print(extract_therapist_info(html_page))
+        print(pd.DataFrame(extract_therapist_info(html_page)))
         all_therapist_info_list.extend(extract_therapist_info(html_page))
 
     page.wait_for_timeout(3000)
@@ -73,4 +77,5 @@ with sync_playwright() as p:
 
 df = pd.DataFrame(all_therapist_info_list)
 
-df.to_excel("all_therapist_info_list_sample_table.xlsx", sheet_name="therapist_info", index=False)
+# df.to_excel("all_therapist_info_list_sample_table.xlsx", sheet_name="therapist_info", index=False)
+print(df)

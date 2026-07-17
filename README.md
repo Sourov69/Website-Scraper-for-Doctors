@@ -4,32 +4,41 @@
 
 ### Client requirements was
 
+<p align="center">
+  <img src="media/website.png" width="700"/>
+</p>
+
+```text
 I’m looking for a freelancer to extract and analyze listing data from the following website with filters: 
 
 https://care.headway.co/search/california?address=San+Diego%2C+CA+92108%2C+USA&forChild=ADULTS&frontEndCarrierId=61&issues=lgbtq&lat=32.7742488&lon=-117.1411815&medium=VIRTUAL&state=CALIFORNIA&typeOfCare=Talk+Therapy&availabilities=EVENING&modalityCareTypes=INDIVIDUAL_THERAPY
+
+
 
 **Additional criteria would include:**
 - 1. The profile must include the word(s) ‘neurodivergent’ or ‘neurodivergence’. 
 - 2. Must verify that they have an appointment available after 6pm at some point over the next 2 weeks. 
 - 3. Must accept ‘Blue Shield of California’ insurance. For all of the results I need all fields extracted as possible into XLSX.
 
+```
+
 --- 
 
 ## Deliverables
 
-•	Collect/enrich all of the information you can such as (you can tell me what is & is not possible):
-•	Company Name
-•	Brief Description
-•	Categories / Keywords
-•	Contact Name
-•	Contact Title
-•	Type (Buyer/Broker/D2C)
-•	Website
-•	Email
-•	Phone
-•	Estimated Size (Employees or revenue)
-•	Source
-•	~100 promising prospects
+- Collect/enrich all of the information you can such as (you can tell me what is & is not possible):
+- Company Name
+- Brief Description
+- Categories / Keywords
+- Contact Name
+- Contact Title
+- Type (Buyer/Broker/D2C)
+- Website
+- Email
+- Phone
+- Estimated Size (Employees or revenue)
+- Source
+- ~100 promising prospects
 
 
 ## My approaches
