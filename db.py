@@ -5,42 +5,69 @@ from mysql.connector import Error
 
 load_dotenv()
 
-def get_connection():
-    try:
-        conn = mysql.connector.connect(
-            host="localhost",
-            user = "root",
-            password = os.getenv("DATABASE_PASSWORD"),
-            database = "doctor_scraper"
+
+class Database:
+    def __init__(self, host, user, password, database):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+        
+        # Making the connection with mysql
+        self.conn = mysql.connector.connect(
+            host= self.host,
+            user = self.user,
+            password = self.password,
+            database = self.database
         )
-        if conn.is_connected():
-            print("Connection OK!")
-        return conn
-    except Error as e:
-        print(f"Connection failed ! : {e}")
-        return None
 
-conn = get_connection()
+        self.cursor = self.conn.cursor(dictionary=True)
+    
+    # Checking the connection
+    def check_connection(self):
+        if self.conn.is_connected():
+            print("Connection OK !")
+        else:
+            print("Connection Failed !!")
 
+    # Single row data insertion function 
+    def insert_single_row(self, therapist_name, sub_title, Bio, therapist_url, Specialty, style):
+        query = """
+                INSERT IGNORE INTO doctor_scraper.therapists_list
+                ( therapist_name, sub_title, Bio, therapist_url, Specialty, style)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
 
-def insert_product(therapist_name, sub_title, Bio, therapist_url, Specialty, style):
-    conn = get_connection()
-    cusror = conn.cursor()
+        values = (therapist_name, sub_title, Bio, therapist_url, Specialty, style)
+        self.cursor.execute(query, values)
+        self.conn.commit()
 
-    query = """
-            INSERT IGNORE INTO doctor_scraper.therapists_list
-            ( therapist_name, sub_title, Bio, therapist_url, Specialty, style)
-            VALUES (%s, %s, %s, %s, %s, %s)
+    ## Insert many rows onec
+    def inser_many_rows(self, data):
+        query = """
+            INSERT INTO doctor_scraper.therapists_list
+                ( therapist_name, sub_title, Bio, therapist_url, Specialty, style)
+                VALUES (%s, %s, %s, %s, %s, %s)
         """
+        self.cursor.executemany(query, data)
+        self.conn.commit()
 
-    values = (therapist_name, sub_title, Bio, therapist_url, Specialty, style)
-    cusror.execute(query, values)
-    conn.commit()
-    cusror.close()
-    conn.close()
+        print(f"{self.cursor.rowcount} rows inserted.")
+    
+    def close_connection(self):
+        self.cursor.close()
+        self.conn.close()
 
-insert_product("Mr Sourov", "Engineer", "Hey i am sourov", "https://sourovtalukder.com", "Data Science", "Pro")
 
+db = Database(
+    host="localhost",
+    user = "root",
+    password = os.getenv("DATABASE_PASSWORD"),
+    database = "doctor_scraper"
+)
+
+db.check_connection()
 
     
-
+# db.insert_single_row("Hridhy", "Moharani", "Sourov's Love", "Farihatasmin@gmail.com", "Silent", "Angel")
+db.close_connection()
