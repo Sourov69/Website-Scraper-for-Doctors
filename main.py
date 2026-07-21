@@ -75,13 +75,17 @@ with sync_playwright() as p:
     df.to_excel("therapist_info.xlsx", sheet_name="therapist", index=False)
 
 
-    # # while True:
-    for i in range(2):
-        next_page = page.locator("nav.hlx-pagination ul > li:last-child")
-        if not next_page.is_visible():
-            break
+    while True:
+        try:
+            next_page = page.locator("nav.hlx-pagination ul > li:last-child")
+            if not next_page.is_visible():
+                print("No next page")
+                break
+            next_page.click()
 
-        next_page.click()
+        except Exception as e:
+            print(f"Pagination stopped : {e}")
+            break
         page.wait_for_timeout(300)
         for _ in range(1, random.randint(12, 15)):
             scrool_amount = random.randint(800, 1000)
